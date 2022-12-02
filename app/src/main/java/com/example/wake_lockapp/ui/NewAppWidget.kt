@@ -20,48 +20,41 @@ import kotlinx.coroutines.launch
  * Implementation of App Widget functionality.
  */
 class NewAppWidget : AppWidgetProvider() {
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
 
-        CoroutineScope(Dispatchers.Main).launch {
-            Toast.makeText(context, "9h4gfrefg", Toast.LENGTH_SHORT).show()
-        }
-        Log.d("dkdfdfd","fodfmdfd")
+        context.startActivity(Intent(context,MainActivity2::class.java))
+
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {
-            // Construct the RemoteViews object
-            val views = RemoteViews(context.packageName, R.layout.new_app_widget)
-            //  views.setTextViewText(R.id.tenantTextView, widgetText)
 
-            // Instruct the widget manager to update the widget
-
-            val intent  = Intent(context, MainActivity2::class.java)
-            views.setOnClickPendingIntent(R.id.appwidget_text,PendingIntent.getActivity(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT))
-
-
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-
-        //updateAppWidget(context, appWidgetManager, appWidgetId)
+            updateAppWidget(context, appWidgetManager, appWidgetId)
         }
     }
 
     override fun onEnabled(context: Context) {
-      Toast.makeText(context,"onEnabled",Toast.LENGTH_SHORT).show()
         // Enter relevant functionality for when the first widget is created
     }
 
     override fun onDisabled(context: Context) {
-        Toast.makeText(context,"onDisabled",Toast.LENGTH_SHORT).show()
         // Enter relevant functionality for when the last widget is disabled
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
-            Log.d("fdifndfd","djRUBRFRF")
+
+
+        CoroutineScope(Dispatchers.Main).launch {
+            Toast.makeText(context, "9h4gfrefg", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,"onDisabled",Toast.LENGTH_SHORT).show()
+
+        }
     }
+
 
     @SuppressLint("RemoteViewLayout")
     fun updateAppWidget(
@@ -70,12 +63,9 @@ class NewAppWidget : AppWidgetProvider() {
         appWidgetId: Int
     ) {
 
-        Toast.makeText(context,"onDisabled",Toast.LENGTH_SHORT).show()
-
         val views = RemoteViews(context.packageName, R.layout.new_app_widget)
         //  views.setTextViewText(R.id.tenantTextView, widgetText)
 
-        // Setup update button to send an update request as a pending intent.
         val intentUpdate = Intent(context, NewAppWidget::class.java)
         intentUpdate.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
 
@@ -84,12 +74,13 @@ class NewAppWidget : AppWidgetProvider() {
 
 
 
-        val pendingUpdate = PendingIntent.getActivity(context, appWidgetId, Intent(context,MainActivity2::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingUpdate = PendingIntent.getBroadcast(context, appWidgetId,intentUpdate /*Intent(context,MainActivity2::class.java)*/, 0)
 
         views.setOnClickPendingIntent(R.id.buttonnn, pendingUpdate)
 
         appWidgetManager.updateAppWidget(appWidgetId, views)
 
     }
+
 }
 
